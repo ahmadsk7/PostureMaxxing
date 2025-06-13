@@ -1,0 +1,82 @@
+import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import { PostureState, PostureLevel } from '../types/posture';
+
+// Initial state
+const initialState: PostureState = {
+  currentPosture: 'good',
+  streak: 0,
+  score: 0,
+  lastCheck: null,
+};
+
+// Action types
+type PostureAction =
+  | { type: 'UPDATE_POSTURE'; payload: PostureLevel }
+  | { type: 'RESET_STREAK' }
+  | { type: 'UPDATE_SCORE'; payload: number };
+
+// Reducer
+function postureReducer(state: PostureState, action: PostureAction): PostureState {
+  switch (action.type) {
+    case 'UPDATE_POSTURE':
+      return {
+        ...state,
+        currentPosture: action.payload,
+        lastCheck: Date.now(),
+      };
+    case 'RESET_STREAK':
+      return {
+        ...state,
+        streak: 0,
+      };
+    case 'UPDATE_SCORE':
+      return {
+        ...state,
+        score: action.payload,
+      };
+    default:
+      return state;
+  }
+}
+
+// Context
+interface PostureContextType {
+  state: PostureState;
+  updatePosture: (posture: PostureLevel) => void;
+  resetStreak: () => void;
+  updateScore: (score: number) => void;
+}
+
+const PostureContext = createContext<PostureContextType | undefined>(undefined);
+
+// Provider
+export function PostureProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(postureReducer, initialState);
+
+  const updatePosture = (posture: PostureLevel) => {
+    dispatch({ type: 'UPDATE_POSTURE', payload: posture });
+  };
+
+  const resetStreak = () => {
+    dispatch({ type: 'RESET_STREAK' });
+  };
+
+  const updateScore = (score: number) => {
+    dispatch({ type: 'UPDATE_SCORE', payload: score });
+  };
+
+  return (
+    <PostureContext.Provider value={{ state, updatePosture, resetStreak, updateScore }}>
+      {children}
+    </PostureContext.Provider>
+  );
+}
+
+// Hook
+export function usePosture() {
+  const context = useContext(PostureContext);
+  if (context === undefined) {
+    throw new Error('usePosture must be used within a PostureProvider');
+  }
+  return context;
+} 

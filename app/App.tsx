@@ -1,6 +1,11 @@
 import React from 'react';
 import { AppNavigator } from './navigation/AppNavigator';
+import { PostureProvider } from './context/PostureContext';
 
 export default function App() {
-  return <AppNavigator />;
+  return (
+    <PostureProvider>
+      <AppNavigator />
+    </PostureProvider>
+  );
 }
