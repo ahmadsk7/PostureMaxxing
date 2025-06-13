@@ -7,6 +7,7 @@ This updated plan adds **more features (1.0 → 2.0)**, including a **camera-bas
 ## MVP 1.0 — Core App (Free)
 
 ### ✅ 1. Environment Setup
+
 (Same as previous list: initialize Expo + TypeScript + navigation + folder setup)
 
 ---
@@ -196,6 +197,7 @@ This updated plan adds **more features (1.0 → 2.0)**, including a **camera-bas
 ## 🧪 Test Plan per Feature
 
 Each feature should:
+
 - Be testable via manual tap or visual confirmation
 - Persist in local storage if needed
 - Log clearly in console or screen
@@ -204,6 +206,7 @@ Each feature should:
 ---
 
 Let me know if you want:
-- GitHub Issues per step  
-- Camera flow starter code  
+
+- GitHub Issues per step
+- Camera flow starter code
 - RevenueCat-free mock premium wall UI

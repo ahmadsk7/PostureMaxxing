@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { PostureState, PostureLevel } from '../types/posture';
+import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
+import { PostureState, PostureLevel, PostureEntry } from '../types/posture';
+import { postureStorage } from '../storage/postureStorage';
+import { calculateStreak } from '../utils/calculateStreak';
 
 // Initial state
 const initialState: PostureState = {
@@ -13,7 +15,8 @@ const initialState: PostureState = {
 type PostureAction =
   | { type: 'UPDATE_POSTURE'; payload: PostureLevel }
   | { type: 'RESET_STREAK' }
-  | { type: 'UPDATE_SCORE'; payload: number };
+  | { type: 'UPDATE_SCORE'; payload: number }
+  | { type: 'SET_STREAK'; payload: number };
 
 // Reducer
 function postureReducer(state: PostureState, action: PostureAction): PostureState {
@@ -34,6 +37,11 @@ function postureReducer(state: PostureState, action: PostureAction): PostureStat
         ...state,
         score: action.payload,
       };
+    case 'SET_STREAK':
+      return {
+        ...state,
+        streak: action.payload,
+      };
     default:
       return state;
   }
@@ -42,7 +50,7 @@ function postureReducer(state: PostureState, action: PostureAction): PostureStat
 // Context
 interface PostureContextType {
   state: PostureState;
-  updatePosture: (posture: PostureLevel) => void;
+  updatePosture: (posture: PostureLevel) => Promise<void>;
   resetStreak: () => void;
   updateScore: (score: number) => void;
 }
@@ -53,8 +61,32 @@ const PostureContext = createContext<PostureContextType | undefined>(undefined);
 export function PostureProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(postureReducer, initialState);
 
-  const updatePosture = (posture: PostureLevel) => {
+  // Load initial streak
+  useEffect(() => {
+    const loadStreak = async () => {
+      const logs = await postureStorage.getPostureLogs();
+      const streak = calculateStreak(logs);
+      dispatch({ type: 'SET_STREAK', payload: streak });
+    };
+    loadStreak();
+  }, []);
+
+  const updatePosture = async (posture: PostureLevel) => {
+    const entry: PostureEntry = {
+      timestamp: Date.now(),
+      posture,
+    };
+
+    // Save to storage
+    await postureStorage.savePostureLog(entry);
+
+    // Update state
     dispatch({ type: 'UPDATE_POSTURE', payload: posture });
+
+    // Recalculate streak
+    const logs = await postureStorage.getPostureLogs();
+    const streak = calculateStreak(logs);
+    dispatch({ type: 'SET_STREAK', payload: streak });
   };
 
   const resetStreak = () => {
