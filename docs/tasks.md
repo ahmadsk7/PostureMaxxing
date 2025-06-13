@@ -1,6 +1,6 @@
-# 🧠 PostureMax — Full React Native Architecture + Paid MVP Features
+# 🧠 PostureMax — Full React Native Architecture + Paid MVP Features (w/ Camera-Based Scoring)
 
-This updated plan adds **more features (1.0 → 2.0)** and **clearly separates paid features**, keeping each task granular and testable. The architecture remains the same.
+This updated plan adds **more features (1.0 → 2.0)**, including a **camera-based posture scoring flow**, and clearly separates **paid features**, while keeping each task granular and testable. The architecture remains the same.
 
 ---
 
@@ -74,13 +74,63 @@ This updated plan adds **more features (1.0 → 2.0)** and **clearly separates p
 
 ---
 
+## MVP 1.5 — Posture Scoring via Camera (Free or Premium)
+
+> Optional feature built after core flow and before paid features. Scalable from mock to real pose detection.
+
+---
+
+### ✅ 10. Camera Flow Entry Point
+
+- Add a button to `HomeScreen`: “Check My Posture (Photo)”
+- Navigates to new `CameraScreen.tsx`
+
+---
+
+### ✅ 11. Implement CameraScreen
+
+- Use `expo-image-picker` or `expo-camera`
+- Allow take photo or upload
+- Display image preview
+
+---
+
+### ✅ 12. Create `postureVisionService.ts` (Mock)
+
+- Analyze image locally (mock logic)
+- Return posture score, verdict, and tip
+
+---
+
+### ✅ 13. Display Score UI
+
+- Show score and advice after image submission
+- Format: "72/100 — Keep your chin level"
+
+---
+
+### ✅ 14. Save Score to Storage (Optional)
+
+- Save `imageUri`, `score`, `timestamp` to `AsyncStorage`
+- Display in Stats if persisted
+
+---
+
+### ✅ 15. Premium-Ready Pose Detection Hook (Optional)
+
+- Scaffold `analyzePoseFromImage()` in `postureVisionService.ts`
+- Returns mock data for now (pose angle, shoulder tilt)
+- Prepares for future MediaPipe/TensorFlow upgrade
+
+---
+
 ## MVP 2.0 — Premium Features (Paid Tier)
 
 > Monetize via RevenueCat (or placeholder "Unlock Premium" modal)
 
 ---
 
-### 💎 10. Multiple Custom Reminders (Premium)
+### 💎 16. Multiple Custom Reminders (Premium)
 
 - Create multiple reminders with custom times + days
 - Store each reminder’s metadata
@@ -88,15 +138,15 @@ This updated plan adds **more features (1.0 → 2.0)** and **clearly separates p
 
 ---
 
-### 💎 11. Smart Insights (Premium)
+### 💎 17. Smart Insights (Premium)
 
 - Weekly report generation (e.g., % improvement, worst time of day)
 - Use helper like `calculateScore.ts` to assess user trends
-- Display in `StatsScreen` with breakdown: “You slouch most at 3–5 PM”
+- Include camera-based posture scores in analytics
 
 ---
 
-### 💎 12. Guided Stretch Packs (Premium)
+### 💎 18. Guided Stretch Packs (Premium)
 
 - Unlock extra stretch types (neck, back, hips)
 - Show lock icon for free users
@@ -104,55 +154,56 @@ This updated plan adds **more features (1.0 → 2.0)** and **clearly separates p
 
 ---
 
-### 💎 13. Posture Trends Calendar (Premium)
+### 💎 19. Posture Trends Calendar (Premium)
 
 - Build a calendar heatmap view
 - Each day shows posture score (green = good)
-- Click day to see breakdown
+- Tap to view posture photo + score
 
 ---
 
-### 💎 14. Pose Detection Mode (Premium)
+### 💎 20. Pose Detection Mode (Premium)
 
-- Optional toggle to activate pose tracking (mock for now)
-- Prepares app for future MediaPipe/TensorFlow integration
+- Toggle to activate full pose analysis from images
+- Use MediaPipe or TensorFlow integration
+- Real shoulder/head alignment scoring
 
 ---
 
-### 💎 15. Premium Lock & Modal Flow
+### 💎 21. Premium Lock & Modal Flow
 
 - `isPremiumUser` boolean in context
-- When premium features are tapped by free user:
-  - Show upsell modal (text + mock pricing + CTA)
-- Later, integrate RevenueCat or Stripe
+- Locked feature triggers upsell modal (with mock pricing)
+- Later connect to RevenueCat
 
 ---
 
-### 💎 16. Premium Badge + Profile
+### 💎 22. Premium Badge + Profile
 
 - Show badge on Home: “🌟 Premium Active”
-- Add profile screen with name, streak, and premium plan info
+- Add profile screen with name, streak, and subscription info
 
 ---
 
 ## 🔒 Monetization (Optional Add-on)
 
 - Integrate RevenueCat SDK
-- Free tier = limited reminders, 1 stretch routine, no insights
-- Premium = all above features + future add-ons
+- Free tier = 1 reminder, basic stretches, mock scoring only
+- Premium = multiple reminders, guided packs, smart insights, real pose analysis
 
 ---
 
 ## 🧪 Test Plan per Feature
 
-Every single step should:
-- Be testable via manual tap or context log
-- Persist in storage or be visually confirmed
-- Have clear rollback capability (e.g., toggle off notifications)
+Each feature should:
+- Be testable via manual tap or visual confirmation
+- Persist in local storage if needed
+- Log clearly in console or screen
+- Have rollback capability (e.g., delete reminder, reset score)
 
 ---
 
 Let me know if you want:
-- GitHub Issues per step
-- Boilerplate code for Step 1
-- A staging “mock premium flow” UI before RevenueCat
+- GitHub Issues per step  
+- Camera flow starter code  
+- RevenueCat-free mock premium wall UI
