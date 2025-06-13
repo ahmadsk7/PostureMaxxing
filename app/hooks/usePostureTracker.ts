@@ -28,10 +28,6 @@ export function usePostureTracker() {
   // Set up periodic checks
   useEffect(() => {
     const interval = setInterval(checkPosture, CHECK_INTERVAL);
-    
-    // Initial check
-    checkPosture();
-
     return () => clearInterval(interval);
   }, [checkPosture]);
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
 import { PostureCard } from '../components/PostureCard';
 import { StretchTimer } from '../components/StretchTimer';
 import { usePosture } from '../context/PostureContext';
@@ -8,6 +8,13 @@ import { usePostureTracker } from '../hooks/usePostureTracker';
 export const HomeScreen = () => {
   const { state } = usePosture();
   const { currentPosture, checkPosture } = usePostureTracker();
+
+  // Set initial posture on first render
+  useEffect(() => {
+    if (!state.lastCheck) {
+      checkPosture();
+    }
+  }, []);
 
   const handleStretchComplete = () => {
     // In a real app, this would update the user's stats
@@ -21,6 +28,14 @@ export const HomeScreen = () => {
         streak={state.streak}
         score={state.score}
       />
+      <View style={styles.section}>
+        <TouchableOpacity 
+          style={styles.checkButton}
+          onPress={checkPosture}
+        >
+          <Text style={styles.checkButtonText}>Check Posture Now</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.section}>
         <StretchTimer
           duration={300} // 5 minutes
@@ -46,5 +61,16 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
+  },
+  checkButton: {
+    backgroundColor: '#2196F3',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  checkButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 }); 
